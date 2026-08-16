@@ -1,5 +1,7 @@
 # مین‌گنجور — proof of concept
 
+**[▶ Live demo](https://ganjoor.github.io/mini/)**
+
 A single static file, no build step, no server — proof that `ganjoor-data` on its own (fetched
 live from jsDelivr) is enough to run a small reading app for classical Persian poetry.
 
