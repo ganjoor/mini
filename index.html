@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مین‌گنجور</title>
+<meta name="description" content="نمونهٔ کمینه‌ای از گنجور، ساخته‌شده تنها با مخزن دادهٔ عمومی ganjoor-data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241A12;
+    --ink-soft:#4A3B2C;
+    --paper:#EFE3C8;
+    --paper-deep:#E4D3AC;
+    --paper-card:#F6EDD8;
+    --gold:#A97C1F;
+    --gold-bright:#C9992C;
+    --maroon:#7A2331;
+    --line: rgba(36,26,18,0.16);
+    --line-strong: rgba(36,26,18,0.32);
+    --shadow: 0 1px 2px rgba(36,26,18,0.06), 0 6px 20px rgba(36,26,18,0.08);
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      radial-gradient(rgba(169,124,31,0.05) 1px, transparent 1px);
+    background-size: 18px 18px;
+    color:var(--ink);
+    font-family:'Vazirmatn', system-ui, sans-serif;
+    line-height:1.7;
+    min-height:100vh;
+  }
+
+  a{color:inherit; text-decoration:none;}
+
+  ::selection{ background: rgba(169,124,31,0.28); }
+
+  /* ---------- shell ---------- */
+
+  header.site{
+    position:sticky; top:0; z-index:10;
+    background: linear-gradient(180deg, var(--paper) 0%, rgba(239,227,200,0.94) 100%);
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+
+  .site-inner{
+    max-width:760px; margin:0 auto;
+    padding:14px 20px;
+    display:flex; align-items:baseline; gap:10px;
+  }
+
+  .brand{
+    font-family:'Noto Nastaliq Urdu', serif;
+    font-size:1.7rem;
+    color:var(--maroon);
+    line-height:1;
+  }
+
+  .brand-sub{
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    opacity:0.75;
+    letter-spacing:0.02em;
+  }
+
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 20px 90px;
+    min-height:60vh;
+  }
+
+  footer.site{
+    max-width:760px; margin:0 auto;
+    padding:20px 20px 50px;
+    color:var(--ink-soft);
+    font-size:0.78rem;
+    opacity:0.7;
+    text-align:center;
+  }
+  footer.site a{ color:var(--maroon); border-bottom:1px dotted var(--maroon); }
+
+  /* ---------- breadcrumb ---------- */
+
+  .crumbs{
+    display:flex; flex-wrap:wrap; gap:6px;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    margin-bottom:22px;
+  }
+  .crumbs a{ color:var(--ink-soft); }
+  .crumbs a:hover{ color:var(--maroon); }
+  .crumbs .sep{ opacity:0.5; }
+  .crumbs .current{ color:var(--maroon); font-weight:600; }
+
+  /* ---------- lists (poets / categories / poems) ---------- */
+
+  .ornament{
+    display:flex; justify-content:center; margin:6px 0 22px;
+    opacity:0.55;
+  }
+
+  .list-title{
+    font-family:'Noto Naskh Arabic', serif;
+    font-size:1.5rem;
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .list-sub{
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    margin:0 0 20px;
+    max-width:58ch;
+  }
+
+  .card-list{ display:flex; flex-direction:column; gap:1px; }
+
+  .card-row{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px;
+    padding:13px 16px;
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    transition: border-color .15s ease, transform .1s ease;
+  }
+  .card-row:first-child{ border-radius:8px 8px 0 0; }
+  .card-row:last-child{ border-radius:0 0 8px 8px; }
+  .card-row + .card-row{ border-top:none; }
+  .card-row:hover{ border-color:var(--gold); }
+  .card-row:active{ transform: scale(0.997); }
+
+  .card-row .t{
+    font-family:'Noto Naskh Arabic', serif;
+    font-size:1.05rem;
+  }
+  .card-row .k{
+    font-size:0.72rem;
+    color:var(--gold);
+    border:1px solid var(--gold);
+    border-radius:999px;
+    padding:2px 9px;
+    opacity:0.85;
+    flex-shrink:0;
+  }
+
+  .poet-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+    gap:10px;
+  }
+  .poet-tile{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 14px;
+    text-align:center;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .poet-tile:hover{ border-color:var(--gold); box-shadow:var(--shadow); }
+  .poet-tile .t{
+    font-family:'Noto Naskh Arabic', serif;
+    font-size:1.05rem;
+  }
+
+  /* ---------- poet bio ---------- */
+
+  .poet-header{ text-align:center; margin-bottom:28px; }
+  .poet-header .name{
+    font-family:'Noto Nastaliq Urdu', serif;
+    font-size:2.6rem;
+    color:var(--maroon);
+    line-height:1.3;
+  }
+  .poet-header .years{
+    color:var(--ink-soft); font-size:0.85rem; margin-top:2px;
+  }
+  .poet-header .bio{
+    max-width:56ch; margin:14px auto 0;
+    color:var(--ink-soft); font-size:0.92rem;
+  }
+
+  /* ---------- poem ---------- */
+
+  .poem-frame{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:34px 26px 30px;
+    box-shadow:var(--shadow);
+  }
+
+  .poem-title{
+    font-family:'Noto Naskh Arabic', serif;
+    font-weight:600;
+    font-size:1.35rem;
+    text-align:center;
+    margin:0 0 4px;
+  }
+
+  .poem-meta{
+    text-align:center;
+    font-size:0.78rem;
+    color:var(--gold);
+    margin-bottom:22px;
+  }
+  .poem-meta span + span::before{ content:"·"; margin:0 8px; color:var(--line-strong); }
+
+  .verses{
+    font-family:'Noto Naskh Arabic', serif;
+    font-size:1.14rem;
+  }
+
+  .couplet{
+    display:flex;
+    justify-content:space-between;
+    gap:22px;
+    padding:9px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .couplet:last-child{ border-bottom:none; }
+  .couplet .m1, .couplet .m2{ flex:1 1 0; min-width:0; }
+  .couplet.centered{ justify-content:center; text-align:center; }
+  .couplet.centered .m1, .couplet.centered .m2{ flex:none; }
+
+  .verse-solo{
+    padding:9px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .verse-solo:last-child{ border-bottom:none; }
+  .verse-solo.comment{
+    font-family:'Vazirmatn', sans-serif;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+
+  .poem-source{
+    margin-top:22px; padding-top:14px; border-top:1px solid var(--line);
+    font-size:0.75rem; color:var(--ink-soft); text-align:center;
+  }
+  .poem-source a{ color:var(--maroon); border-bottom:1px dotted var(--maroon); }
+
+  /* ---------- id jump ---------- */
+
+  .id-jump{
+    display:flex; gap:8px; align-items:center;
+    margin-bottom:26px;
+    font-size:0.82rem;
+    color:var(--ink-soft);
+  }
+  .id-jump input{
+    width:90px;
+    font-family:inherit;
+    border:1px solid var(--line-strong);
+    border-radius:6px;
+    padding:6px 10px;
+    background:var(--paper-card);
+    color:var(--ink);
+  }
+  .id-jump button{
+    font-family:inherit;
+    border:1px solid var(--maroon);
+    color:var(--maroon);
+    background:transparent;
+    border-radius:6px;
+    padding:6px 14px;
+    cursor:pointer;
+    font-size:0.82rem;
+  }
+  .id-jump button:hover{ background:var(--maroon); color:var(--paper); }
+
+  /* ---------- states ---------- */
+
+  .state{
+    text-align:center;
+    color:var(--ink-soft);
+    padding:60px 20px;
+    font-size:0.95rem;
+  }
+  .state .err-title{
+    color:var(--maroon); font-weight:600; margin-bottom:6px;
+  }
+
+  .skeleton{
+    background:linear-gradient(90deg, var(--paper-card) 0%, var(--paper-deep) 50%, var(--paper-card) 100%);
+    background-size:200% 100%;
+    animation:shimmer 1.3s infinite;
+    border-radius:8px; height:48px; margin-bottom:1px;
+  }
+  @keyframes shimmer{ 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
+
+  @media (prefers-reduced-motion: reduce){
+    .skeleton{ animation:none; }
+    .card-row, .poet-tile{ transition:none; }
+  }
+
+  @media (max-width:480px){
+    .poem-frame{ padding:24px 16px 22px; }
+    .verses{ font-size:1.03rem; }
+    .couplet{ gap:12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="site-inner">
+    <a href="#/" class="brand">مین‌گنجور</a>
+    <span class="brand-sub">نمونهٔ کمینه — از روی ganjoor-data</span>
+  </div>
+</header>
+
+<main id="app">
+  <div class="state">در حال بارگذاری…</div>
+</main>
+
+<footer class="site">
+  ساخته‌شده روی <a href="https://github.com/ganjoor/ganjoor-data" target="_blank" rel="noopener">ganjoor-data</a>
+  — بدون هیچ سروری، فقط با <a href="https://www.jsdelivr.com/" target="_blank" rel="noopener">jsDelivr</a> و کد این صفحه.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var API_BASE = "https://cdn.jsdelivr.net/gh/ganjoor/ganjoor-data@main/";
+  var ID_SHARD_SIZE = 2000; // must match manifest.IdIndexShardSize; corrected after manifest loads
+
+  var app = document.getElementById("app");
+  var titleCache = Object.create(null); // path -> title, filled in as pages load, used for breadcrumbs
+  var manifestPromise = null;
+
+  // ---------- fetch helpers ----------
+
+  function fetchJson(path){
+    return fetch(API_BASE + path).then(function(res){
+      if(!res.ok){ throw new HttpError(res.status, path); }
+      return res.json();
+    });
+  }
+
+  function HttpError(status, path){
+    this.status = status;
+    this.path = path;
+  }
+
+  function getManifest(){
+    if(!manifestPromise){
+      manifestPromise = fetchJson("manifest.json").then(function(m){
+        if(m.IdIndexShardSize) ID_SHARD_SIZE = m.IdIndexShardSize;
+        return m;
+      });
+    }
+    return manifestPromise;
+  }
+
+  function trimSlash(p){ return p.replace(/^\/+/, ""); }
+
+  function poetJsonPath(fullUrl){ return "poets/" + trimSlash(fullUrl) + "/poet.json"; }
+  function catJsonPath(fullUrl){ return "poets/" + trimSlash(fullUrl) + "/_cat.json"; }
+  function poemJsonPath(fullUrl){ return "poets/" + trimSlash(fullUrl) + ".json"; }
+
+  // ---------- tiny router ----------
+
+  window.addEventListener("hashchange", route);
+  window.addEventListener("DOMContentLoaded", route);
+
+  function currentPath(){
+    var h = location.hash.replace(/^#/, "");
+    if(h === "" || h === "/") return [];
+    return trimSlash(h).split("/").filter(Boolean);
+  }
+
+  function route(){
+    var segs = currentPath();
+    window.scrollTo(0,0);
+    if(segs.length === 0){
+      renderPoetList();
+    } else if(segs.length === 1){
+      renderPoetPage(segs);
+    } else {
+      // could be a category or a poem - resolved by trying cat first, poem on 404
+      renderCatOrPoem(segs);
+    }
+  }
+
+  // ---------- rendering: states ----------
+
+  function showLoading(label){
+    app.innerHTML =
+      '<div class="skeleton" style="width:60%;height:28px;margin:0 auto 26px;"></div>' +
+      '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
+  }
+
+  function showError(err, opts){
+    opts = opts || {};
+    var title = "چیزی درست پیش نرفت";
+    var detail = "";
+    if(err instanceof HttpError && err.status === 404){
+      title = opts.notFoundTitle || "پیدا نشد";
+      detail = "چیزی در این نشانی در مخزن دادهٔ عمومی وجود ندارد.";
+    } else {
+      detail = "اتصال به jsDelivr برقرار نشد یا پاسخ نامعتبر بود. کمی بعد دوباره امتحان کنید.";
+    }
+    app.innerHTML =
+      '<div class="state">' +
+        '<div class="err-title">' + title + '</div>' +
+        '<div>' + detail + '</div>' +
+        '<div style="margin-top:18px;"><a href="#/">‹ بازگشت به فهرست سخنوران</a></div>' +
+      '</div>';
+  }
+
+  // ---------- rendering: breadcrumb ----------
+
+  function renderCrumbs(segs, currentLabel){
+    var parts = ['<a href="#/">سخنوران</a>'];
+    var acc = "";
+    for(var i=0;i<segs.length;i++){
+      acc += (acc ? "/" : "") + segs[i];
+      var isLast = (i === segs.length - 1);
+      var label = titleCache[acc] || segs[i];
+      parts.push('<span class="sep">/</span>');
+      if(isLast){
+        parts.push('<span class="current">' + escapeHtml(currentLabel || label) + '</span>');
+      } else {
+        parts.push('<a href="#/' + acc + '">' + escapeHtml(label) + '</a>');
+      }
+    }
+    return '<nav class="crumbs">' + parts.join("") + '</nav>';
+  }
+
+  function ornamentSvg(){
+    return '<div class="ornament"><svg width="26" height="26" viewBox="0 0 26 26" fill="none">' +
+      '<path d="M13 1 L15.8 10.2 L25 13 L15.8 15.8 L13 25 L10.2 15.8 L1 13 L10.2 10.2 Z" ' +
+      'stroke="#A97C1F" stroke-width="1" fill="none"/></svg></div>';
+  }
+
+  // ---------- view: poet list ----------
+
+  function renderPoetList(){
+    showLoading();
+    getManifest().then(function(m){
+      var poets = (m.Poets || []).slice().sort(function(a,b){
+        return (a.Nickname||"").localeCompare(b.Nickname||"", "fa");
+      });
+      var idJump =
+        '<div class="id-jump">' +
+          '<span>یافتن شعر با کد عددی:</span>' +
+          '<input type="number" id="poemIdInput" placeholder="مثلاً ۱۳۰">' +
+          '<button id="poemIdGo">برو</button>' +
+        '</div>';
+
+      var tiles = poets.map(function(p){
+        titleCache[trimSlash(p.FullUrl)] = p.Nickname;
+        return '<a class="poet-tile" href="#' + p.FullUrl + '"><div class="t">' + escapeHtml(p.Nickname) + '</div></a>';
+      }).join("");
+
+      app.innerHTML =
+        ornamentSvg() +
+        '<h1 class="list-title">سخنوران</h1>' +
+        '<p class="list-sub">' + poets.length + ' سخنور، بر پایهٔ داده‌ای که به‌صورت عمومی و بدون هیچ اطلاعات کاربری در ' +
+        '<a href="https://github.com/ganjoor/ganjoor-data" target="_blank" rel="noopener">ganjoor-data</a> منتشر شده است.</p>' +
+        idJump +
+        '<div class="poet-grid">' + tiles + '</div>';
+
+      document.getElementById("poemIdGo").addEventListener("click", jumpToPoemId);
+      document.getElementById("poemIdInput").addEventListener("keydown", function(e){
+        if(e.key === "Enter") jumpToPoemId();
+      });
+    }).catch(showError);
+  }
+
+  function jumpToPoemId(){
+    var input = document.getElementById("poemIdInput");
+    var id = parseInt(input.value, 10);
+    if(!id && id !== 0){ return; }
+    var bucket = Math.floor(id / ID_SHARD_SIZE);
+    fetchJson("index/poems-by-id/" + bucket + ".json").then(function(shard){
+      var url = shard[String(id)];
+      if(!url){
+        input.style.borderColor = "#7A2331";
+        return;
+      }
+      location.hash = "#" + url;
+    }).catch(function(){
+      input.style.borderColor = "#7A2331";
+    });
+  }
+
+  // ---------- view: poet page (bio + root category contents) ----------
+
+  function renderPoetPage(segs){
+    showLoading();
+    var fullUrl = "/" + segs.join("/");
+    Promise.all([
+      fetchJson(poetJsonPath(fullUrl)),
+      fetchJson(catJsonPath(fullUrl))
+    ]).then(function(results){
+      var poet = results[0], cat = results[1];
+      titleCache[trimSlash(fullUrl)] = poet.Nickname;
+
+      var years = "";
+      if(poet.ValidBirthDate || poet.ValidDeathDate){
+        years = (poet.ValidBirthDate ? toPersianDigits(poet.BirthYearInLHijri) : "؟") +
+                " – " +
+                (poet.ValidDeathDate ? toPersianDigits(poet.DeathYearInLHijri) : "؟") +
+                " ه‌ق";
+      }
+
+      app.innerHTML =
+        renderCrumbs(segs) +
+        '<div class="poet-header">' +
+          '<div class="name">' + escapeHtml(poet.Nickname) + '</div>' +
+          (years ? '<div class="years">' + years + '</div>' : '') +
+          (poet.Description ? '<div class="bio">' + escapeHtml(truncate(poet.Description, 320)) + '</div>' : '') +
+        '</div>' +
+        renderCatChildren(cat, segs);
+    }).catch(showError);
+  }
+
+  // ---------- view: category or poem (path length > 1) ----------
+
+  function renderCatOrPoem(segs){
+    showLoading();
+    var fullUrl = "/" + segs.join("/");
+    fetchJson(catJsonPath(fullUrl)).then(function(cat){
+      titleCache[trimSlash(fullUrl)] = cat.Title;
+      app.innerHTML =
+        renderCrumbs(segs) +
+        (cat.Description ? '<p class="list-sub">' + escapeHtml(truncate(cat.Description, 260)) + '</p>' : '') +
+        renderCatChildren(cat, segs);
+    }).catch(function(err){
+      if(err instanceof HttpError && err.status === 404){
+        renderPoem(segs, fullUrl);
+      } else {
+        showError(err);
+      }
+    });
+  }
+
+  function renderCatChildren(cat, segs){
+    var rows = [];
+    (cat.ChildCats || []).forEach(function(c){
+      titleCache[trimSlash(c.FullUrl)] = c.Title;
+      rows.push('<a class="card-row" href="#' + c.FullUrl + '"><span class="t">' + escapeHtml(c.Title) + '</span><span class="k">بخش</span></a>');
+    });
+    (cat.Poems || []).forEach(function(p){
+      titleCache[trimSlash(p.FullUrl)] = p.Title;
+      rows.push('<a class="card-row" href="#' + p.FullUrl + '"><span class="t">' + escapeHtml(p.Title) + '</span><span class="k">شعر</span></a>');
+    });
+    if(rows.length === 0){
+      return '<div class="state">این بخش هنوز زیرشاخه یا شعری ندارد.</div>';
+    }
+    return '<div class="card-list">' + rows.join("") + '</div>';
+  }
+
+  // ---------- view: poem ----------
+
+  function renderPoem(segs, fullUrl){
+    fetchJson(poemJsonPath(fullUrl)).then(function(poem){
+      titleCache[trimSlash(fullUrl)] = poem.Title;
+
+      var meta = [];
+      if(poem.Metre && poem.Metre.Name) meta.push(poem.Metre.Name);
+      if(poem.RhymeLetters) meta.push("قافیه: " + poem.RhymeLetters);
+
+      app.innerHTML =
+        renderCrumbs(segs, poem.Title) +
+        '<div class="poem-frame">' +
+          '<h1 class="poem-title">' + escapeHtml(poem.FullTitle || poem.Title) + '</h1>' +
+          (meta.length ? '<div class="poem-meta">' + meta.map(function(m){return '<span>'+escapeHtml(m)+'</span>';}).join("") + '</div>' : '') +
+          renderVerses(poem.Verses || []) +
+          '<div class="poem-source">' +
+            '<a href="https://ganjoor.net' + fullUrl + '" target="_blank" rel="noopener">مشاهدهٔ این شعر در گنجور ‹</a>' +
+          '</div>' +
+        '</div>';
+    }).catch(showError);
+  }
+
+  function renderVerses(verses){
+    var out = [];
+    var i = 0;
+    while(i < verses.length){
+      var v = verses[i];
+      var pos = v.Position;
+      if(pos === "Right" && verses[i+1] && verses[i+1].Position === "Left"){
+        out.push('<div class="couplet"><div class="m1">' + escapeHtml(v.Text) + '</div><div class="m2">' + escapeHtml(verses[i+1].Text) + '</div></div>');
+        i += 2;
+      } else if(pos === "CenteredVerse1" && verses[i+1] && verses[i+1].Position === "CenteredVerse2"){
+        out.push('<div class="couplet centered"><div class="m1">' + escapeHtml(v.Text) + '&nbsp;&nbsp;' + escapeHtml(verses[i+1].Text) + '</div></div>');
+        i += 2;
+      } else if(pos === "Comment"){
+        out.push('<div class="verse-solo comment">' + escapeHtml(v.Text) + '</div>');
+        i += 1;
+      } else {
+        out.push('<div class="verse-solo">' + escapeHtml(v.Text) + '</div>');
+        i += 1;
+      }
+    }
+    return '<div class="verses">' + out.join("") + '</div>';
+  }
+
+  // ---------- utils ----------
+
+  function escapeHtml(s){
+    if(s == null) return "";
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function truncate(s, n){
+    if(!s) return "";
+    return s.length > n ? s.slice(0, n).trim() + "…" : s;
+  }
+
+  var persianDigits = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
+  function toPersianDigits(n){
+    return String(n).replace(/[0-9]/g, function(d){ return persianDigits[+d]; });
+  }
+
+})();
+</script>
+
+</body>
+</html>
